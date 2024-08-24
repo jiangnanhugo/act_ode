@@ -85,10 +85,9 @@ def main(verbose=False):
                 continue
             ith = int(one_eq[0].strip()[7:-5]) - 1
             one_ode[ith] = one_eq[1].strip()
-        # if '425' in eq_name:
-        #     print(one_ode)
+
         expressions = " | ".join(one_ode).replace("[", "_").replace("]", '')
-        for i in range(int(description[eq_name][1])):
+        for i in range(int(description[eq_name][1])+1):
             if f'x_{i}' in expressions:
                 expressions = expressions.replace(f'x_{i}', f'x_{i - 1}')
         descrpt = description[eq_name][0].replace("_", "-")
@@ -108,8 +107,6 @@ def main(verbose=False):
         one_eq = all_equations[key]
         expressions = one_eq['eq']
 
-        # consts = one_eq['consts'][0]
-        # x = [Symbol(f'x[{i}]') for i in range(one_eq['nvars'])]
         if verbose:
             if mode == one_eq['nvars']:
                 if one_eq['nvars'] == 1:
@@ -119,9 +116,13 @@ def main(verbose=False):
                 for i, ei in enumerate(expressions.split(' | ')):
                     print(" & $\dot{x}_", end="")
                     ei = str(parse_expr(ei.replace('^', '**')).expand().evalf(n=4)).replace('**', '^')
-                    ei = ei.replace('sin', '\sin').replace('cos', '\cos').replace('exp', '\exp').replace('log',
-                                                                                                         '\log').replace(
-                        'cot', '\cot').replace("*", "")
+                    ei = ei.replace(
+                        'sin', '\sin').replace(
+                        'cos', '\cos').replace(
+                        'exp', '\exp').replace(
+                        'log', '\log').replace(
+                        'cot', '\cot').replace(
+                        "*", "")
                     print("{} = {}$ \\\\".format(i, ei), end="\n")
                 print("  \hline")
         expressions = expressions.replace('^', '**')
@@ -143,7 +144,7 @@ def main(verbose=False):
         expressions = expressions.replace('abs', 'np.abs')
         expressions = expressions.replace('Abs', 'np.abs')
         function_set = detect_function_set(expressions)
-        for i in range(one_eq['nvars']):
+        for i in range(one_eq['nvars']+1):
             if f'x_{i}' in expressions:
                 expressions = expressions.replace(f'x_{i}', f'x[{i}]')
             if f'x{i}' in expressions:
